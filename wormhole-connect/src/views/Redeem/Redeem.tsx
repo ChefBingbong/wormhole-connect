@@ -10,7 +10,7 @@ import {
 } from 'store/redeem';
 import { sleep } from 'utils';
 import { fetchIsVAAEnqueued } from 'utils/vaa';
-import { SignedMessage } from 'routes';
+import { SignedMessage, isNTTRoute } from 'routes';
 import RouteOperator from 'routes/operator';
 import { ParsedMessage, ParsedRelayerMessage } from 'utils/sdk';
 
@@ -18,8 +18,11 @@ import PageHeader from 'components/PageHeader';
 import Spacer from 'components/Spacer';
 import ChainsTag from './Tag';
 import Stepper from './Stepper';
+import NTTStepper from './NTTStepper';
 import GovernorEnqueuedWarning from './GovernorEnqueuedWarning';
 import { showHamburgerMenu } from 'config';
+import useDeliveryStatus from 'hooks/useRelayStatus';
+import useCheckInboundQueuedTransfer from 'hooks/useCheckInboundQueuedTransfer';
 
 function Redeem({
   setSignedMessage,
@@ -45,7 +48,8 @@ function Redeem({
     if (
       !txData?.sendTx ||
       !txData.emitterAddress || // no VAA exists, e.g. CCTP route
-      !!signedMessage // if we have the VAA, then it's not enqueued
+      !!signedMessage || // if we have the VAA, then it's not enqueued
+      (route && isNTTRoute(route)) // NTT route doesn't use token bridge / governor
     ) {
       return;
     }
@@ -67,7 +71,7 @@ function Redeem({
     return () => {
       cancelled = true;
     };
-  }, [txData, signedMessage, setIsVaaEnqueued]);
+  }, [txData, signedMessage, route, setIsVaaEnqueued]);
 
   // fetch the VAA
   useEffect(() => {
@@ -81,8 +85,9 @@ function Redeem({
       while (signed === undefined && !cancelled) {
         try {
           signed = await RouteOperator.getSignedMessage(route, txData);
-        } catch {
+        } catch (e) {
           signed = undefined;
+          console.log(e);
         }
         if (cancelled) {
           return;
@@ -135,6 +140,9 @@ function Redeem({
     };
   }, [route, txData, transferComplete, setTransferComplete, signedMessage]);
 
+  useCheckInboundQueuedTransfer();
+  useDeliveryStatus();
+
   return txData?.fromChain ? (
     <div
       style={{
@@ -153,7 +161,7 @@ function Redeem({
         show={!signedMessage && isVaaEnqueued}
         chain={txData.fromChain}
       />
-      <Stepper />
+      {route && isNTTRoute(route) ? <NTTStepper /> : <Stepper />}
     </div>
   ) : (
     <></>

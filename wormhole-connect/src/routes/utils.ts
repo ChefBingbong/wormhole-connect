@@ -17,7 +17,7 @@ import {
 } from 'utils/sdk';
 import { getTokenById } from 'utils';
 import { CHAIN_ID_ETH } from '@certusone/wormhole-sdk/lib/esm/utils';
-import { TokenConfig } from 'config/types';
+import { Route, TokenConfig } from 'config/types';
 
 // adapts the sdk returned parsed message to the type that
 // wh connect uses
@@ -86,4 +86,8 @@ export const isIlliquidDestToken = (
     }
   }
   return false;
+};
+
+export const isNTTRoute = (route: Route) => {
+  return route === Route.NTTManual || route === Route.NTTRelay;
 };

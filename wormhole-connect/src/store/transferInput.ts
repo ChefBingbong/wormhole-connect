@@ -242,6 +242,8 @@ const establishRoute = (state: TransferInputState) => {
     Route.TBTC,
     Route.ETHBridge,
     Route.wstETHBridge,
+    Route.NTTRelay,
+    Route.NTTManual,
     Route.Relay,
     Route.Bridge,
   ];

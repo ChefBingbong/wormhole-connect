@@ -148,9 +148,6 @@ export class BridgeRoute extends BaseRoute {
   /**
    * These operations have to be implemented in subclasses.
    */
-  getMinSendAmount(routeOptions: any): number {
-    return 0;
-  }
 
   async send(
     token: TokenId | 'native',

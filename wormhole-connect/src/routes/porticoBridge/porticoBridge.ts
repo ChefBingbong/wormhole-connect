@@ -365,10 +365,6 @@ export abstract class PorticoBridge extends BaseRoute {
     throw new Error('not implemented');
   }
 
-  getMinSendAmount(routeOptions: PorticoBridgeState): number {
-    return 0;
-  }
-
   getMaxSendAmount(): number {
     return this.maxAmount;
   }
