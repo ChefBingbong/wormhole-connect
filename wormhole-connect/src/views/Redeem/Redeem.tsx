@@ -21,7 +21,7 @@ import Stepper from './Stepper';
 import NTTStepper from './NTTStepper';
 import GovernorEnqueuedWarning from './GovernorEnqueuedWarning';
 import { showHamburgerMenu } from 'config';
-import useDeliveryStatus from 'hooks/useRelayStatus';
+import useDeliveryStatus from 'hooks/useDeliveryStatus';
 import useCheckInboundQueuedTransfer from 'hooks/useCheckInboundQueuedTransfer';
 
 function Redeem({
